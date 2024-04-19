@@ -1,4 +1,4 @@
-.container{
+.login-container{
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -7,12 +7,12 @@
     width: 100vw;
 }
 
-.container h1{
+.login-container h1{
     font-size: 48px;
     margin-bottom: 8px;
 }
 
-.container span{
+.login-container span{
     margin-bottom: 28px;
 }
 

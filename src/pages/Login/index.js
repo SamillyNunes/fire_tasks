@@ -18,7 +18,7 @@ function Login() {
     }
 
     return (
-      <div className="container" >
+      <div className="login-container" >
         
         <h1>Lista de tarefas</h1>
         <span>Gerencie sua agenda de forma fácil.</span>
