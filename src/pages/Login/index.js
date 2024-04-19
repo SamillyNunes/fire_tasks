@@ -1,17 +1,29 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { signInWithEmailAndPassword } from "firebase/auth";
+
 import './login.css';
-import { Link } from "react-router-dom";
+import { auth } from '../../firebaseConnection';
 
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    function handleLogin(event){
+    const navigate = useNavigate();
+
+    async function handleLogin(event){
       // Pra prevenir de atualizar a pagina
       event.preventDefault();
 
       if(email!=='' && password!==''){
-        alert('Boa')
+        await signInWithEmailAndPassword(auth, email, password)
+        .then(()=>{
+          navigate('tasks', {replace: true});
+        })
+        .catch(error => {
+          console.log('ERRO AO FAZER LOGIN!');
+        });
+
       } else {
         alert('Preencha todos os campos')
       }
@@ -34,7 +46,6 @@ function Login() {
           <input
             type="password"
             placeholder="*******"
-            autoComplete={false}
             value={password}
             onChange={(v)=> setPassword(v.target.value)} 
           />
