@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { signOut } from 'firebase/auth';
+
+import { auth } from '../../firebaseConnection';
 import './tasks.css';
 
 function Tasks(){
@@ -6,6 +9,10 @@ function Tasks(){
 
     function handleRegister(e){
         e.preventDefault(); //p n atualizar a pagina
+    }
+
+    async function handleLogout(){
+        await signOut(auth);
     }
 
     return (
@@ -31,7 +38,7 @@ function Tasks(){
                 </div>
             </article>
 
-            <button className='btn-logout' >Sair</button>
+            <button className='btn-logout' onClick={handleLogout} >Sair</button>
         </div>
     );
 }
