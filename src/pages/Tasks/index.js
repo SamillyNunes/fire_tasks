@@ -6,7 +6,9 @@ import {
     onSnapshot,
     query,
     orderBy,
-    where
+    where,
+    doc,
+    deleteDoc
  } from 'firebase/firestore';
 
 import { auth, db } from '../../firebaseConnection';
@@ -77,6 +79,17 @@ function Tasks(){
         await signOut(auth);
     }
 
+    async function deleteTask(id){
+        const docRef = doc(db, "tasks", id);
+        await deleteDoc(docRef)
+        .then(()=>{
+            console.log('Deletado!');
+        })
+        .catch(error => {
+            console.log('Erro ao deletar tarefa');
+        })
+    }
+
     return (
         <div className='tasks-container'>
             <h1>Minhas tarefas</h1>
@@ -97,7 +110,7 @@ function Tasks(){
 
                     <div>
                         <button>Editar</button>
-                        <button className='btn-delete' >Concluir</button>
+                        <button onClick={()=> deleteTask(item.id)} className='btn-delete' >Concluir</button>
                     </div>
                 </article>
             ))}
