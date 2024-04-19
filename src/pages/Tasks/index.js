@@ -2,7 +2,11 @@ import { useState, useEffect } from 'react';
 import { signOut } from 'firebase/auth';
 import { 
     addDoc,
-    collection
+    collection,
+    onSnapshot,
+    query,
+    orderBy,
+    where
  } from 'firebase/firestore';
 
 import { auth, db } from '../../firebaseConnection';
@@ -12,13 +16,37 @@ function Tasks(){
     const [taskInput, setTaskInput] = useState('');
     const [user, setUser] = useState({});
 
+    const [tasks, setTasks] = useState([]);
+
     useEffect(()=>{
-        async function loadUser(){
-            const userDetail = localStorage.getItem("firetasks@detailUser");
-            setUser(JSON.parse(userDetail));
+        async function loadUserAndTasks(){
+            const userDetailStorage = localStorage.getItem("firetasks@detailUser");
+            const userDetail = JSON.parse(userDetailStorage);
+            setUser(userDetail);
+
+            if(userDetail){
+                const taskRef = collection(db, "tasks");
+                // Esta fazendo uma pesquisa, filtrando por ordem decrescente e apenas os posts do usuario q ta logado
+                const q = query(taskRef, orderBy("createdAt", "desc"), where("userUid", "==", userDetail?.uid));
+                onSnapshot(q, (snapshot)=>{
+                    let tasksList = [];
+
+                    snapshot.forEach((doc)=>{
+                        tasksList.push({
+                            id: doc.id,
+                            task: doc.data().task,
+                            userUid: doc.data().userUid,
+                        });
+                    });
+
+                    console.log(tasksList);
+
+                    setTasks(tasksList);
+                });
+            }
         }
 
-        loadUser();
+        loadUserAndTasks();
 
     }, []);
 
@@ -63,14 +91,16 @@ function Tasks(){
                 <button type='submit' className='btn-register' >Salvar tarefa</button>
             </form>
 
-            <article className='list'>
-                <p>Estudar javascript e reactJs</p>
+            {tasks.map((item)=>(
+                <article className='list' key={item.id} >
+                    <p> {item.task} </p>
 
-                <div>
-                    <button>Editar</button>
-                    <button className='btn-delete' >Concluir</button>
-                </div>
-            </article>
+                    <div>
+                        <button>Editar</button>
+                        <button className='btn-delete' >Concluir</button>
+                    </div>
+                </article>
+            ))}
 
             <button className='btn-logout' onClick={handleLogout} >Sair</button>
         </div>
