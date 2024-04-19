@@ -1,14 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { signOut } from 'firebase/auth';
+import { 
+    addDoc,
+    collection
+ } from 'firebase/firestore';
 
-import { auth } from '../../firebaseConnection';
+import { auth, db } from '../../firebaseConnection';
 import './tasks.css';
 
 function Tasks(){
     const [taskInput, setTaskInput] = useState('');
+    const [user, setUser] = useState({});
 
-    function handleRegister(e){
+    useEffect(()=>{
+        async function loadUser(){
+            const userDetail = localStorage.getItem("firetasks@detailUser");
+            setUser(JSON.parse(userDetail));
+        }
+
+        loadUser();
+
+    }, []);
+
+    async function handleRegister(e){
         e.preventDefault(); //p n atualizar a pagina
+
+        if(taskInput===''){
+            alert('Digite sua tarefa!');
+            return;
+        }
+
+        const collectionRef = collection(db, "tasks");
+        await addDoc(collectionRef, {
+            task: taskInput,
+            createdAt: new Date(),
+            userUid: user?.uid
+        })
+        .then(()=>{
+            console.log('Tarefa registrada');
+            setTaskInput('');
+        })
+        .catch(error => {
+            console.log('ERRO AO REGISTRAR!');
+        });
     }
 
     async function handleLogout(){
