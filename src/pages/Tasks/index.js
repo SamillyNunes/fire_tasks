@@ -14,6 +14,7 @@ import {
 
 import { auth, db } from '../../firebaseConnection';
 import './tasks.css';
+import { toast } from 'react-toastify';
 
 function Tasks(){
     const [taskInput, setTaskInput] = useState('');
@@ -58,7 +59,7 @@ function Tasks(){
         e.preventDefault(); //p n atualizar a pagina
 
         if(taskInput===''){
-            alert('Digite sua tarefa!');
+            toast.warning('Digite sua tarefa!');            
             return;
         }
 
@@ -74,11 +75,11 @@ function Tasks(){
             userUid: user?.uid
         })
         .then(()=>{
-            console.log('Tarefa registrada');
+            toast.success('Tarefa registrada');
             setTaskInput('');
         })
         .catch(error => {
-            console.log('ERRO AO REGISTRAR!');
+            toast.error('Algo inesperado aconteceu');
         });
     }
 
@@ -90,10 +91,10 @@ function Tasks(){
         const docRef = doc(db, "tasks", id);
         await deleteDoc(docRef)
         .then(()=>{
-            console.log('Deletado!');
+            toast.success('Tarefa deletada com sucesso!');
         })
         .catch(error => {
-            console.log('Erro ao deletar tarefa');
+            toast.error('Erro ao deletar tarefa');
         })
     }
 
@@ -112,10 +113,10 @@ function Tasks(){
             task: taskInput
         })
         .then(()=>{
-            alert('Tarefa atualizada');
+            toast.success('Tarefa atualizada com sucesso!');
         })
         .catch(error => {
-            console.log('Erro ao atualizar');
+            toast.error('Erro ao atualizar');
         });
 
         

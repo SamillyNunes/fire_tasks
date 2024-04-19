@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 
 import { auth } from "../../firebaseConnection";
+import { toast } from "react-toastify";
 
 function Register() {
     const [email, setEmail] = useState('');
@@ -20,10 +21,10 @@ function Register() {
           navigate('/tasks', {replace: true});
         })
         .catch(error => {
-          console.log('Erro ao fazer o cadastro');
+          toast.error('Erro ao fazer o cadastro. Tente novamente em instantes.');
         });
       } else {
-        alert('Preencha todos os campos')
+        toast.warning('Preencha todos os campos!');
       }
     }
 

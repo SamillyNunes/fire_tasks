@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { toast } from "react-toastify";
 
 import './login.css';
 import { auth } from '../../firebaseConnection';
@@ -21,11 +22,11 @@ function Login() {
           navigate('tasks', {replace: true});
         })
         .catch(error => {
-          console.log('ERRO AO FAZER LOGIN!');
+          toast.error('Usuário não encontrado.');
         });
 
       } else {
-        alert('Preencha todos os campos')
+        toast.warning('Preencha todos os campos!');
       }
     }
 
